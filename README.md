@@ -1,4 +1,4 @@
-# helium-node-rs
+# helium-rs
 
 A Rust wrapper around the [Helium.com](http://github.com/helium/blockchain-node) blockchain node.
 
