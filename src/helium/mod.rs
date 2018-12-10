@@ -33,7 +33,7 @@ impl Client {
     }
 
     pub fn list_accounts(&self) -> Result<Vec<Account>, reqwest::Error> {
-        let request_url = format!("https://{}:{}/stargazers", self.host, self.port);
+        let request_url = format!("https://{}:{}/accounts", self.host, self.port);
         let mut response = reqwest::get(&request_url)?;
 
         let accounts: Vec<Account> = response.json()?;
