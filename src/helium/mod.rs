@@ -8,6 +8,7 @@ pub struct Account {
     pub balance: u64,
     pub encrypted: String,
     pub transaction_fee: u64,
+    pub has_association: bool,
 }
 
 #[derive(Deserialize, Debug)]
@@ -33,10 +34,27 @@ impl Client {
     }
 
     pub fn list_accounts(&self) -> Result<Vec<Account>, reqwest::Error> {
-        let request_url = format!("https://{}:{}/accounts", self.host, self.port);
+        let request_url = format!(
+            "http://{host}:{port}/accounts",
+            host = self.host,
+            port = self.port
+        );
         let mut response = reqwest::get(&request_url)?;
 
         let accounts: Vec<Account> = response.json()?;
         Ok(accounts)
+    }
+
+    pub fn get_account(&self, address: String) -> Result<Account, reqwest::Error> {
+        let request_url = format!(
+            "http://{host}:{port}/accounts/{address}",
+            host = self.host,
+            port = self.port,
+            address = address
+        );
+        let mut response = reqwest::get(&request_url)?;
+
+        let account: Account = response.json()?;
+        Ok(account)
     }
 }
