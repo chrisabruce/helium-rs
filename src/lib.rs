@@ -91,6 +91,28 @@ impl Client {
 
         Ok(account)
     }
+
+    pub fn pay(
+        &self,
+        from_address: String,
+        to_address: String,
+        amount: u64,
+    ) -> Result<(), reqwest::Error> {
+        let request_url = format!(
+            "http://{host}:{port}/accounts/{from_address}/pay",
+            host = self.host,
+            port = self.port,
+            from_address = from_address
+        );
+        let params = [("toAddress", to_address), ("amount", amount.to_string())];
+
+        let _response = reqwest::Client::new()
+            .post(&request_url)
+            .form(&params)
+            .send()?;
+
+        Ok(())
+    }
 }
 
 #[cfg(test)]
