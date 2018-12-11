@@ -59,8 +59,39 @@ impl Client {
         let account: Account = response.json()?;
         Ok(account)
     }
-}
 
+    pub fn create_account(&self, name: String) -> Result<Account, reqwest::Error> {
+        let request_url = format!(
+            "http://{host}:{port}/accounts",
+            host = self.host,
+            port = self.host
+        );
+        let mut response = reqwest::Client::new().post(&request_url).send()?;
+        let account: Account = response.json()?;
+
+        let account = self.rename_account(account.address, name).unwrap();
+
+        Ok(account)
+    }
+
+    pub fn rename_account(&self, address: String, name: String) -> Result<Account, reqwest::Error> {
+        let request_url = format!(
+            "http://{host}:{port}/accounts/{address}/rename",
+            host = self.host,
+            port = self.port,
+            address = address
+        );
+        let params = [("name", name)];
+        let mut response = reqwest::Client::new()
+            .post(&request_url)
+            .form(&params)
+            .send()?;
+
+        let account: Account = response.json()?;
+
+        Ok(account)
+    }
+}
 
 #[cfg(test)]
 mod tests {
