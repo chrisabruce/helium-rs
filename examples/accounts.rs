@@ -1,4 +1,4 @@
-extern crate helium;
+use helium;
 
 fn main() {
     let client = helium::Client::new("localhost", 4001);

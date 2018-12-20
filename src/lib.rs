@@ -94,8 +94,8 @@ impl Client {
 
     pub fn pay(
         &self,
-        from_address: String,
-        to_address: String,
+        from_address: &str,
+        to_address: &str,
         amount: u64,
     ) -> Result<(), reqwest::Error> {
         let request_url = format!(
@@ -104,7 +104,7 @@ impl Client {
             port = self.port,
             from_address = from_address
         );
-        let params = [("toAddress", to_address), ("amount", amount.to_string())];
+        let params = [("toAddress", to_address), ("amount", &amount.to_string())];
 
         let _response = reqwest::Client::new()
             .post(&request_url)
