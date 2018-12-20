@@ -31,7 +31,7 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(host: &'static str, port: u16) -> Client {
+    pub fn new(host: &'static str, port: u16) -> Self {
         Client { host, port }
     }
 
@@ -47,7 +47,7 @@ impl Client {
         Ok(accounts)
     }
 
-    pub fn get_account(&self, address: String) -> Result<Account, reqwest::Error> {
+    pub fn get_account(&self, address: &str) -> Result<Account, reqwest::Error> {
         let request_url = format!(
             "http://{host}:{port}/accounts/{address}",
             host = self.host,
@@ -60,7 +60,7 @@ impl Client {
         Ok(account)
     }
 
-    pub fn create_account(&self, name: String) -> Result<Account, reqwest::Error> {
+    pub fn create_account(&self, name: &str) -> Result<Account, reqwest::Error> {
         let request_url = format!(
             "http://{host}:{port}/accounts",
             host = self.host,
@@ -69,12 +69,12 @@ impl Client {
         let mut response = reqwest::Client::new().post(&request_url).send()?;
         let account: Account = response.json()?;
 
-        let account = self.rename_account(account.address, name).unwrap();
+        let account = self.rename_account(&account.address, &name).unwrap();
 
         Ok(account)
     }
 
-    pub fn rename_account(&self, address: String, name: String) -> Result<Account, reqwest::Error> {
+    pub fn rename_account(&self, address: &str, name: &str) -> Result<Account, reqwest::Error> {
         let request_url = format!(
             "http://{host}:{port}/accounts/{address}/rename",
             host = self.host,
