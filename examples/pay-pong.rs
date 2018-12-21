@@ -13,22 +13,34 @@ fn main() {
     if accounts.len() < 1 {
         panic!("Requires two existing accounts.");
     }
+    let mut acct1_nonce_counter = accounts[0].nonce;
+    let mut acct2_nonce_counter = accounts[1].nonce;
 
     let five_seconds = Duration::new(PAY_INTERVAL, 0);
     let task = Interval::new_interval(five_seconds)
         .for_each(move |_| {
-            //let client = helium::Client::new("localhost", 4001);
-            //let accounts = match client.list_accounts().unwrap();
-
             let mut rng = rand::thread_rng();
             let amt: u64 = rng.gen_range(10_000_000_000, 100_000_000_000);
 
             print!("Paying: {}\n", amt);
+            acct1_nonce_counter += 1;
             client
-                .pay(&accounts[0].address, &accounts[1].address, amt)
+                .pay(
+                    &accounts[0].address,
+                    &accounts[1].address,
+                    amt,
+                    acct1_nonce_counter,
+                )
                 .unwrap();
+
+            acct2_nonce_counter += 1;
             client
-                .pay(&accounts[1].address, &accounts[0].address, amt)
+                .pay(
+                    &accounts[1].address,
+                    &accounts[0].address,
+                    amt,
+                    acct2_nonce_counter,
+                )
                 .unwrap();
 
             Ok(())

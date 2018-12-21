@@ -100,6 +100,7 @@ impl Client {
         from_address: &str,
         to_address: &str,
         amount: u64,
+        nonce: u64
     ) -> Result<(), reqwest::Error> {
         let request_url = format!(
             "http://{host}:{port}/accounts/{from_address}/pay",
@@ -108,9 +109,10 @@ impl Client {
             from_address = from_address
         );
         let body = format!(
-            "{{\"toAddress\":\"{}\", \"amount\":{}}}",
+            "{{\"toAddress\":\"{}\", \"amount\":{}, \"nonce\":{}}}",
             to_address,
-            &amount.to_string()
+            &amount.to_string(),
+            nonce
         );
 
         let mut headers = Headers::new();
