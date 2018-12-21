@@ -2,6 +2,8 @@
 extern crate serde_derive;
 extern crate reqwest;
 
+use reqwest::header::{ContentType, Headers};
+
 #[derive(Deserialize, Debug)]
 pub struct Account {
     pub address: String,
@@ -104,13 +106,20 @@ impl Client {
             port = self.port,
             from_address = from_address
         );
-        let params = [("toAddress", to_address), ("amount", &amount.to_string())];
+        let body = format!(
+            "{{\"toAddress\":\"{}\", \"amount\":{}}}",
+            to_address,
+            &amount.to_string()
+        );
 
-        let _response = reqwest::Client::new()
+        let mut headers = Headers::new();
+        headers.set(ContentType::json());
+
+        let response = reqwest::Client::new()
             .post(&request_url)
-            .form(&params)
+            .headers(headers)
+            .body(body)
             .send()?;
-
         Ok(())
     }
 }
