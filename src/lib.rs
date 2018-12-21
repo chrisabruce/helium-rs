@@ -10,6 +10,7 @@ pub struct Account {
     pub name: String,
     pub public_key: String,
     pub balance: u64,
+    pub nonce: u64,
     pub encrypted: bool,
     pub transaction_fee: u64,
     pub has_association: bool,
@@ -115,7 +116,7 @@ impl Client {
         let mut headers = Headers::new();
         headers.set(ContentType::json());
 
-        let response = reqwest::Client::new()
+        let _response = reqwest::Client::new()
             .post(&request_url)
             .headers(headers)
             .body(body)

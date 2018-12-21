@@ -6,8 +6,8 @@ fn main() {
     //print!("found: {:?}", accounts);
     for account in accounts {
         print!(
-            "\nAccount: {}({})\nBalance: {}\n",
-            account.name, account.address, account.balance
+            "\nAccount: {}({})\nBalance: {}\nNonce: {}\n",
+            account.name, account.address, account.balance, account.nonce
         );
     }
 }
