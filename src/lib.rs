@@ -10,7 +10,6 @@ pub struct Account {
     pub name: String,
     pub public_key: String,
     pub balance: u64,
-    pub nonce: u64,
     pub encrypted: bool,
     pub transaction_fee: u64,
     pub has_association: bool,
@@ -103,16 +102,14 @@ impl Node {
         from_address: &str,
         to_address: &str,
         amount: u64,
-        nonce: u64,
     ) -> Result<(), reqwest::Error> {
         let request_url = self
             .url_for(format!("/accounts/{from_address}/pay", from_address = from_address).as_str());
 
         let body = format!(
-            "{{\"toAddress\":\"{}\", \"amount\":{}, \"nonce\":{}}}",
+            "{{\"toAddress\":\"{}\", \"amount\":{}}}",
             to_address,
-            &amount.to_string(),
-            nonce
+            &amount.to_string()
         );
 
         let mut headers = Headers::new();
