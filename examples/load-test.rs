@@ -14,10 +14,10 @@ fn main() {
     let interval = Duration::new(POLL_INTERVAL, 0);
     let task = Interval::new_interval(interval)
         .for_each(move |_| {
-            print!("Checking...");
+            print!("Checking...\n");
             let cur_height = node.status().unwrap().node_height; // want to make sure node is current
             if cur_height > last_height {
-                print!("New height: {}", cur_height);
+                print!("New height: {}\n", cur_height);
                 last_height = cur_height;
             }
             Ok(())
