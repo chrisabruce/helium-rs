@@ -1,5 +1,5 @@
 fn main() {
-    let client = helium::Client::new("localhost", 4001);
-    let status = client.status().unwrap();
+    let node = helium::Node::new("localhost", 4001);
+    let status = node.status().unwrap();
     print!("{:?}", status);
 }
