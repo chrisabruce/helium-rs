@@ -31,10 +31,10 @@ pub struct Gateway {
 #[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
-    time: i64,
-    node_height: u64,
-    interval: f64,
-    chain_height: u64,
+    pub time: i64,
+    pub node_height: u64,
+    pub interval: f64,
+    pub chain_height: u64,
 }
 
 pub struct Node {

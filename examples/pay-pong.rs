@@ -10,6 +10,8 @@ const PAY_INTERVAL: u64 = 10;
 fn main() {
     let node = helium::Node::new("localhost", 4001);
     let accounts = node.list_accounts().unwrap();
+
+    print!("Found {} account(s).\n", accounts.len());
     if accounts.len() < 1 {
         panic!("Requires two existing accounts.");
     }
