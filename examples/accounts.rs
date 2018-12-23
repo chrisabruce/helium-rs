@@ -1,8 +1,8 @@
 use helium;
 
 fn main() {
-    let client = helium::Client::new("localhost", 4001);
-    let accounts = client.list_accounts().unwrap();
+    let node = helium::Node::new("localhost", 4001);
+    let accounts = node.list_accounts().unwrap();
     //print!("found: {:?}", accounts);
     for account in accounts {
         print!(

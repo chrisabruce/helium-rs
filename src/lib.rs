@@ -28,22 +28,35 @@ pub struct Gateway {
     pub status: String,
 }
 
-pub struct Client {
+#[derive(Deserialize, Debug)]
+#[serde(rename_all = "camelCase")]
+pub struct Status {
+    time: i64,
+    node_height: u64,
+    interval: f64,
+    chain_height: u64,
+}
+
+pub struct Node {
     host: &'static str,
     port: u16,
 }
 
-impl Client {
+impl Node {
     pub fn new(host: &'static str, port: u16) -> Self {
-        Client { host, port }
+        Node { host, port }
+    }
+
+    pub fn status(&self) -> Result<Status, reqwest::Error> {
+        let request_url = self.url_for("/");
+        let mut response = reqwest::get(&request_url)?;
+
+        let status: Status = response.json()?;
+        Ok(status)
     }
 
     pub fn list_accounts(&self) -> Result<Vec<Account>, reqwest::Error> {
-        let request_url = format!(
-            "http://{host}:{port}/accounts",
-            host = self.host,
-            port = self.port
-        );
+        let request_url = self.url_for("/accounts");
         let mut response = reqwest::get(&request_url)?;
 
         let accounts: Vec<Account> = response.json()?;
@@ -100,14 +113,11 @@ impl Client {
         from_address: &str,
         to_address: &str,
         amount: u64,
-        nonce: u64
+        nonce: u64,
     ) -> Result<(), reqwest::Error> {
-        let request_url = format!(
-            "http://{host}:{port}/accounts/{from_address}/pay",
-            host = self.host,
-            port = self.port,
-            from_address = from_address
-        );
+        let request_url = self
+            .url_for(format!("/accounts/{from_address}/pay", from_address = from_address).as_str());
+
         let body = format!(
             "{{\"toAddress\":\"{}\", \"amount\":{}, \"nonce\":{}}}",
             to_address,
@@ -124,6 +134,15 @@ impl Client {
             .body(body)
             .send()?;
         Ok(())
+    }
+
+    fn url_for(&self, path: &str) -> String {
+        format!(
+            "http://{host}:{port}{path}",
+            host = self.host,
+            port = self.port,
+            path = path,
+        )
     }
 }
 
