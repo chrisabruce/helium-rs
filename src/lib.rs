@@ -64,39 +64,29 @@ impl Node {
     }
 
     pub fn get_account(&self, address: &str) -> Result<Account, reqwest::Error> {
-        let request_url = format!(
-            "http://{host}:{port}/accounts/{address}",
-            host = self.host,
-            port = self.port,
-            address = address
-        );
+        let request_url = self.url_for(format!("/accounts/{address}", address = address).as_str());
         let mut response = reqwest::get(&request_url)?;
 
         let account: Account = response.json()?;
         Ok(account)
     }
-
-    pub fn create_account(&self, name: &str) -> Result<Account, reqwest::Error> {
-        let request_url = format!(
-            "http://{host}:{port}/accounts",
-            host = self.host,
-            port = self.host
-        );
+    pub fn create_account(&self) -> Result<Account, reqwest::Error> {
+        let request_url = self.url_for("/accounts");
         let mut response = reqwest::Client::new().post(&request_url).send()?;
         let account: Account = response.json()?;
 
+        Ok(account)
+    }
+    pub fn create_account_with_name(&self, name: &str) -> Result<Account, reqwest::Error> {
+        let account: Account = self.create_account().unwrap();
         let account = self.rename_account(&account.address, &name).unwrap();
 
         Ok(account)
     }
 
     pub fn rename_account(&self, address: &str, name: &str) -> Result<Account, reqwest::Error> {
-        let request_url = format!(
-            "http://{host}:{port}/accounts/{address}/rename",
-            host = self.host,
-            port = self.port,
-            address = address
-        );
+        let request_url =
+            self.url_for(format!("/accounts/{address}/rename", address = address).as_str());
         let params = [("name", name)];
         let mut response = reqwest::Client::new()
             .post(&request_url)
