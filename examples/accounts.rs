@@ -6,7 +6,7 @@ fn main() {
     //print!("found: {:?}", accounts);
     for account in accounts {
         print!(
-            "\nAccount: {:?}({})\nBalance: {}\n",
+            "\nAccount: {}({})\nBalance: {}\n",
             account.name.unwrap_or("Unnamed Account".to_string()),
             account.address,
             account.balance
