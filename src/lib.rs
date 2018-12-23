@@ -7,7 +7,7 @@ use reqwest::header::{ContentType, Headers};
 #[derive(Deserialize, Debug)]
 pub struct Account {
     pub address: String,
-    pub name: String,
+    pub name: Option<String>,
     pub public_key: String,
     pub balance: u64,
     pub encrypted: bool,
