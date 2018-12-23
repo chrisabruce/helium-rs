@@ -97,6 +97,12 @@ impl Node {
         Ok(account)
     }
 
+    pub fn delete_account(&self, address: &str) -> Result<(), reqwest::Error> {
+        let request_url = self.url_for(format!("/accounts/{address}", address = address).as_str());
+        reqwest::Client::new().delete(&request_url).send()?;
+        Ok(())
+    }
+
     pub fn pay(
         &self,
         from_address: &str,
