@@ -36,6 +36,14 @@ pub struct GatewaysResponse {
 }
 
 #[derive(Deserialize, Debug)]
+pub struct Block {
+    time: u64,
+    round: u64,
+    height: u64,
+    hash: String,
+}
+
+#[derive(Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     pub time: i64,
@@ -148,6 +156,15 @@ impl Node {
         let gateway_response: GatewaysResponse = response.json()?;
 
         Ok(gateway_response)
+    }
+
+    pub fn list_blocks(&self, _before: Option<u64>) -> Result<Vec<Block>, reqwest::Error> {
+        let request_url = self.url_for("/explorer/blocks");
+
+        let mut response = reqwest::Client::new().get(&request_url).send()?;
+        let blocks: Vec<Block> = response.json()?;
+
+        Ok(blocks)
     }
 
     fn url_for(&self, path: &str) -> String {
