@@ -18,13 +18,21 @@ pub struct Account {
 #[derive(Deserialize, Debug)]
 pub struct Gateway {
     pub address: String,
-    pub h3_index: String,
-    pub lat: String,
-    pub lng: String,
+    pub h3_index: Option<String>,
+    pub lat: Option<f64>,
+    pub lng: Option<f64>,
     pub blocks_mined: u64,
-    pub score: i32,
-    pub last_proc_challenge: String,
+    pub score: f64,
+    pub last_proc_challenge: Option<String>,
     pub status: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct GatewaysResponse {
+    pub total: u64,
+    pub per_page: u64,
+    pub page: u64,
+    pub entries: Vec<Gateway>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -127,6 +135,19 @@ impl Node {
             .body(body)
             .send()?;
         Ok(())
+    }
+
+    pub fn list_gateways_raw(
+        &self,
+        _page: Option<u64>,
+        _per_page: Option<u64>,
+    ) -> Result<GatewaysResponse, reqwest::Error> {
+        let request_url = self.url_for("/gateways");
+
+        let mut response = reqwest::Client::new().get(&request_url).send()?;
+        let gateway_response: GatewaysResponse = response.json()?;
+
+        Ok(gateway_response)
     }
 
     fn url_for(&self, path: &str) -> String {
