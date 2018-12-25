@@ -37,10 +37,16 @@ pub struct GatewaysResponse {
 
 #[derive(Deserialize, Debug)]
 pub struct Block {
-    time: u64,
+    time: i64,
     round: u64,
     height: u64,
     hash: String,
+}
+
+pub enum Transaction {
+    Payment,
+    AddHotspot,
+    AssertLocation,
 }
 
 #[derive(Deserialize, Debug)]
