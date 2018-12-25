@@ -43,10 +43,53 @@ pub struct Block {
     hash: String,
 }
 
+#[derive(Deserialize, Debug)]
 pub enum Transaction {
-    Payment,
-    AddHotspot,
-    AssertLocation,
+    Payment(PaymentTx),
+    AddHotspot(AddHotspotTx),
+    AssertLocation(AssertLocationTx),
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PaymentTx {
+    pub tx_type: String,
+    pub time: i64,
+    pub payer: String,
+    pub payee: String,
+    pub nonce: u64,
+    pub index: u64,
+    pub height: u64,
+    pub hash: String,
+    pub fee: u64,
+    pub block_hash: String,
+    pub amount: u64,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct AddHotspotTx {
+    pub tx_type: String,
+    pub time: i64,
+    pub owner: String,
+    pub index: u64,
+    pub height: u64,
+    pub hash: String,
+    pub gateway: String,
+    pub block_hash: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct AssertLocationTx {
+    pub tx_type: String,
+    pub time: i64,
+    pub owner: String,
+    pub nonce: u64,
+    pub location: u64,
+    pub index: u64,
+    pub height: u64,
+    pub hash: String,
+    pub gateway: String,
+    pub fee: u64,
+    pub block_hash: String,
 }
 
 #[derive(Deserialize, Debug)]
