@@ -1,8 +1,9 @@
 #[macro_use]
 extern crate serde_derive;
-extern crate reqwest;
+//extern crate reqwest;
 
 use reqwest::header::{ContentType, Headers};
+use std::collections::HashMap;
 
 #[derive(Deserialize, Debug)]
 pub struct Account {
@@ -207,10 +208,18 @@ impl Node {
         Ok(gateway_response)
     }
 
-    pub fn list_blocks(&self, _before: Option<u64>) -> Result<Vec<Block>, reqwest::Error> {
+    pub fn list_blocks(&self, before: Option<u64>) -> Result<Vec<Block>, reqwest::Error> {
         let request_url = self.url_for("/explorer/blocks");
 
-        let mut response = reqwest::Client::new().get(&request_url).send()?;
+        let mut params = HashMap::new();
+        if let Some(val) = before {
+            params.insert("before", val);
+        }
+
+        let mut response = reqwest::Client::new()
+            .get(&request_url)
+            .query(&params)
+            .send()?;
         let blocks: Vec<Block> = response.json()?;
 
         Ok(blocks)
