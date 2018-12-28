@@ -197,12 +197,23 @@ impl Node {
 
     pub fn list_gateways_raw(
         &self,
-        _page: Option<u64>,
-        _per_page: Option<u64>,
+        page: Option<u64>,
+        per_page: Option<u64>,
     ) -> Result<GatewaysResponse, reqwest::Error> {
         let request_url = self.url_for("/gateways");
 
-        let mut response = reqwest::Client::new().get(&request_url).send()?;
+        let mut params = HashMap::new();
+        if let Some(val) = page {
+            params.insert("page", val);
+        }
+
+        if let Some(val) = per_page {
+            params.insert("per_page", val);
+        }
+        let mut response = reqwest::Client::new()
+            .get(&request_url)
+            .query(&params)
+            .send()?;
         let gateway_response: GatewaysResponse = response.json()?;
 
         Ok(gateway_response)
