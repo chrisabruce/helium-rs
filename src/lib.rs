@@ -1,9 +1,11 @@
 #[macro_use]
 extern crate serde_derive;
-//extern crate reqwest;
 
 use reqwest::header::{ContentType, Headers};
 use std::collections::HashMap;
+use std::time::Duration;
+
+const DEFAULT_TIMEOUT: u64 = 120;
 
 #[derive(Deserialize, Debug)]
 pub struct Account {
@@ -105,16 +107,26 @@ pub struct Status {
 pub struct Node {
     host: &'static str,
     port: u16,
+    client: reqwest::Client,
 }
 
 impl Node {
     pub fn new(host: &'static str, port: u16) -> Self {
-        Node { host, port }
+        Node::new_with_timeout(host, port, DEFAULT_TIMEOUT)
+    }
+
+    pub fn new_with_timeout(host: &'static str, port: u16, timeout: u64) -> Self {
+        let client = reqwest::Client::builder()
+            .gzip(true)
+            .timeout(Duration::from_secs(timeout))
+            .build()
+            .unwrap();
+        Node { host, port, client }
     }
 
     pub fn status(&self) -> Result<Status, reqwest::Error> {
         let request_url = self.url_for("/");
-        let mut response = reqwest::get(&request_url)?;
+        let mut response = self.client.get(&request_url).send()?;
 
         let status: Status = response.json()?;
         Ok(status)
@@ -122,7 +134,7 @@ impl Node {
 
     pub fn list_accounts(&self) -> Result<Vec<Account>, reqwest::Error> {
         let request_url = self.url_for("/accounts");
-        let mut response = reqwest::get(&request_url)?;
+        let mut response = self.client.get(&request_url).send()?;
 
         let accounts: Vec<Account> = response.json()?;
         Ok(accounts)
@@ -130,14 +142,14 @@ impl Node {
 
     pub fn get_account(&self, address: &str) -> Result<Account, reqwest::Error> {
         let request_url = self.url_for(format!("/accounts/{address}", address = address).as_str());
-        let mut response = reqwest::get(&request_url)?;
+        let mut response = self.client.get(&request_url).send()?;
 
         let account: Account = response.json()?;
         Ok(account)
     }
     pub fn create_account(&self) -> Result<Account, reqwest::Error> {
         let request_url = self.url_for("/accounts");
-        let mut response = reqwest::Client::new().post(&request_url).send()?;
+        let mut response = self.client.post(&request_url).send()?;
         let account: Account = response.json()?;
 
         Ok(account)
@@ -153,10 +165,7 @@ impl Node {
         let request_url =
             self.url_for(format!("/accounts/{address}/rename", address = address).as_str());
         let params = [("name", name)];
-        let mut response = reqwest::Client::new()
-            .post(&request_url)
-            .form(&params)
-            .send()?;
+        let mut response = self.client.post(&request_url).form(&params).send()?;
 
         let account: Account = response.json()?;
 
@@ -165,7 +174,7 @@ impl Node {
 
     pub fn delete_account(&self, address: &str) -> Result<(), reqwest::Error> {
         let request_url = self.url_for(format!("/accounts/{address}", address = address).as_str());
-        reqwest::Client::new().delete(&request_url).send()?;
+        self.client.delete(&request_url).send()?;
         Ok(())
     }
 
@@ -187,7 +196,8 @@ impl Node {
         let mut headers = Headers::new();
         headers.set(ContentType::json());
 
-        let _response = reqwest::Client::new()
+        let _response = self
+            .client
             .post(&request_url)
             .headers(headers)
             .body(body)
@@ -210,10 +220,7 @@ impl Node {
         if let Some(val) = per_page {
             params.insert("per_page", val);
         }
-        let mut response = reqwest::Client::new()
-            .get(&request_url)
-            .query(&params)
-            .send()?;
+        let mut response = self.client.get(&request_url).query(&params).send()?;
         let gateway_response: GatewaysResponse = response.json()?;
 
         Ok(gateway_response)
@@ -227,10 +234,7 @@ impl Node {
             params.insert("before", val);
         }
 
-        let mut response = reqwest::Client::new()
-            .get(&request_url)
-            .query(&params)
-            .send()?;
+        let mut response = self.client.get(&request_url).query(&params).send()?;
         let blocks: Vec<Block> = response.json()?;
 
         Ok(blocks)
