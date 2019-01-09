@@ -7,7 +7,7 @@ use std::time::Duration;
 
 const DEFAULT_TIMEOUT: u64 = 120;
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct Account {
     pub address: String,
     pub name: Option<String>,
@@ -18,7 +18,7 @@ pub struct Account {
     pub has_association: bool,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct Gateway {
     pub address: String,
     pub h3_index: Option<String>,
@@ -30,7 +30,7 @@ pub struct Gateway {
     pub status: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct GatewaysResponse {
     pub total: u64,
     pub per_page: u64,
@@ -38,7 +38,7 @@ pub struct GatewaysResponse {
     pub entries: Vec<Gateway>,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct Block {
     time: i64,
     round: u64,
@@ -46,14 +46,14 @@ pub struct Block {
     hash: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub enum Transaction {
     Payment(PaymentTx),
     AddHotspot(AddHotspotTx),
     AssertLocation(AssertLocationTx),
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct PaymentTx {
     pub tx_type: String,
     pub time: i64,
@@ -68,7 +68,7 @@ pub struct PaymentTx {
     pub amount: u64,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct AddHotspotTx {
     pub tx_type: String,
     pub time: i64,
@@ -80,7 +80,7 @@ pub struct AddHotspotTx {
     pub block_hash: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 pub struct AssertLocationTx {
     pub tx_type: String,
     pub time: i64,
@@ -95,7 +95,7 @@ pub struct AssertLocationTx {
     pub block_hash: String,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Clone, Deserialize, Debug)]
 #[serde(rename_all = "camelCase")]
 pub struct Status {
     pub time: i64,
@@ -104,6 +104,7 @@ pub struct Status {
     pub chain_height: u64,
 }
 
+#[derive(Clone, Debug)]
 pub struct Node {
     host: &'static str,
     port: u16,
