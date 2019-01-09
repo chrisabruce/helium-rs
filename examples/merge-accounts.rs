@@ -10,6 +10,6 @@ fn main() {
 
     for a in accounts {
         node.pay(&a.address, &account.address, a.balance).unwrap();
-        node.delete_account(&a.address).unwrap();
+        //node.delete_account(&a.address).unwrap();
     }
 }
