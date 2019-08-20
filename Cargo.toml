@@ -9,14 +9,12 @@ readme = "README.md"
 repository = "https://github.com/chrisabruce/helium-rs.git"
 version = "0.1.1"
 edition = "2018"
-publish = false 
+publish = false
 
 [dependencies]
 reqwest = "0.8"
 serde = "1"
 serde_derive = "1"
 serde_json = "1"
-
-[dev-dependencies]
-rand = "0.6"
-tokio = "=0.1.11"
+tiny-bip39 = "0.6.2"
+sodiumoxide = "0.2.2"

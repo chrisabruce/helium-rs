@@ -1,34 +1,24 @@
 use sodiumoxide::crypto::sign;
+use bip39::{Mnemonic, MnemonicType, Language, Seed};
 
-type Signature = [u8];
-type Message = [u8];
-type Address = [u8];
+type Signature = Vec<u8>;
+type Message = Vec<u8>;
+type Address = Vec<u8>;
 
-/// Returns address.
-pub fn get_address() -> Address {
-    // TODO: replace with file read
-    "x".as_bytes()
+// Generates a list of Words used to create keypair.
+pub fn generate_mnemonic() -> String {
+    Mnemonic::new(MnemonicType::Words12, Language::English).phrase().to_string()
 }
 
-/// Returns a Signature.
-///
-/// # Arguments
-///
-/// * `msg` - The message to sign.
-pub fn sign(msg: &Message) -> Signature {
-    // TODO: replace with secure key retrieval
-    let (pk, sk) = sign::gen_keypair();
-    sign::sign_detached(msg, &sk);
-}
+#[cfg(test)]
+mod should {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
 
-/// Verifies the Signature of signed message.
-///
-/// # Arguments
-///
-/// * `sig` - The Signature used.
-/// * `msg` - The Message signed.
-pub fn verify(sig: &Signature, msg: &Message) -> bool {
-    // TODO: replace with secure key retrieval
-    let (pk, sk) = sign::gen_keypair();
-    sign::verify_detached(sig, msg, pk)
+    #[test]
+    fn successfully_generate_mnemonic() {
+        let m = generate_mnemonic();
+        println!("Mnemonic: {}", m);
+        assert_ne!(m.len(), 0);
+    }
 }
