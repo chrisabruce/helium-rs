@@ -7,15 +7,24 @@ use std::time::Duration;
 
 const DEFAULT_TIMEOUT: u64 = 120;
 
+type Address = Vec<u8>;
+
 #[derive(Clone, Deserialize, Debug)]
 pub struct Account {
-    pub address: String,
+    pub address: Address,
     pub name: Option<String>,
-    pub public_key: String,
     pub balance: u64,
-    pub encrypted: bool,
-    pub transaction_fee: u64,
-    pub has_association: bool,
+    pub fee: u64,
+    pub nonce: u64,
+}
+
+#[derive(Clone, Deserialize, Debug)]
+pub struct Account {
+    pub address: Address,
+    pub name: Option<String>,
+    pub balance: u64,
+    pub fee: u64,
+    pub nonce: u64,
 }
 
 #[derive(Clone, Deserialize, Debug)]
@@ -105,15 +114,15 @@ pub struct Status {
 }
 
 #[derive(Clone, Debug)]
-pub struct Node {
+pub struct Client {
     host: &'static str,
     port: u16,
     client: reqwest::Client,
 }
 
-impl Node {
+impl Client {
     pub fn new(host: &'static str, port: u16) -> Self {
-        Node::new_with_timeout(host, port, DEFAULT_TIMEOUT)
+        Self::new_with_timeout(host, port, DEFAULT_TIMEOUT)
     }
 
     pub fn new_with_timeout(host: &'static str, port: u16, timeout: u64) -> Self {
@@ -122,7 +131,7 @@ impl Node {
             .timeout(Duration::from_secs(timeout))
             .build()
             .unwrap();
-        Node { host, port, client }
+        Self { host, port, client }
     }
 
     pub fn status(&self) -> Result<Status, reqwest::Error> {
@@ -248,13 +257,5 @@ impl Node {
             port = self.port,
             path = path,
         )
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
     }
 }
