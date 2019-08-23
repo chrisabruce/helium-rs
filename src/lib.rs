@@ -5,7 +5,7 @@ use reqwest::header::{ContentType, Headers};
 use std::collections::HashMap;
 use std::time::Duration;
 
-mod crypto;
+pub mod crypto;
 
 const DEFAULT_TIMEOUT: u64 = 120;
 
