@@ -13,11 +13,28 @@ pub fn generate_mnemonic() -> String {
 }
 
 pub fn generate_keypair(phrase: &str) -> (PublicKey, SecretKey) {
-    let mnemonic = Mnemonic::from_phrase(phrase, Language::English);
+    let mnemonic = Mnemonic::from_phrase(phrase, Language::English).unwrap();
     println!("Mnemonic: {:?}", mnemonic);
-    let seed_bip = bip39::Seed::new(&mnemonic.unwrap(), "");
+    let seed_bip = bip39::Seed::new(&mnemonic, "");
+    
 
-    sign::keypair_from_seed(&Seed::from_slice(&seed_bip.as_bytes()).unwrap())
+    let seed_bytes = seed_bip.as_bytes();
+    println!("seed size: {:?}", seed_bytes.len());
+
+    let seed = Seed::from_slice(&seed_bytes);
+
+    match Seed::from_slice(&seed_bytes) {
+        Some(s) => {
+            return sign::keypair_from_seed(&s);
+        },
+        None => {
+            panic!("seed from slice returned None");
+        }
+
+    }
+
+
+    //sign::keypair_from_seed(&Seed::from_slice(&seed_bip.as_bytes()).unwrap())
 }
 
 #[cfg(test)]
