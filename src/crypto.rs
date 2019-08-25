@@ -5,7 +5,7 @@
 //! *NOTE:* it does _not_ appear that Helium's mnemonic implementation is
 //! [bip39]:(https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) 
 //! compatible.  bip39 uses the last word as a checksum and this implementation
-//! does not seem to support that.
+//! does not seem to support the same checksum calc.
 use sodiumoxide::crypto::sign;
 use sodiumoxide::crypto::sign::{Signature, PublicKey, SecretKey, Seed};
 use sodiumoxide::randombytes::randombytes;
