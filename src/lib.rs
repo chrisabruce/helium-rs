@@ -113,8 +113,6 @@ pub struct Client {
     client: reqwest::Client,
 }
 
-
-
 // impl Client {
 //     pub fn new(host: &'static str, port: u16) -> Self {
 //         Self::new_with_timeout(host, port, DEFAULT_TIMEOUT)
