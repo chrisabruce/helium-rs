@@ -41,6 +41,7 @@ fn entropy_to_mnemonic(entropy: &Vec<u8>) -> String {
 
     let entropy_bits = bytes_to_binary(entropy);
     let checksum_bits = derive_checksum_bits(entropy);
+    let bits = format!("{}{}", entropy_bits, checksum_bits);
 
     println!("{:?}", entropy_bits);
 
