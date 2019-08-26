@@ -7,11 +7,11 @@
 //! compatible.  bip39 uses the last word as a checksum and this implementation
 //! does not seem to support the same checksum calc.
 use bs58::decode;
+use regex::Regex;
 use sha2::{Digest, Sha256};
 use sodiumoxide::crypto::sign;
 use sodiumoxide::crypto::sign::{PublicKey, SecretKey, Seed, Signature};
 use sodiumoxide::randombytes::randombytes;
-use std::str::FromStr;
 
 type Message = Vec<u8>;
 type Address = Vec<u8>;
@@ -42,13 +42,29 @@ fn entropy_to_mnemonic(entropy: &Vec<u8>) -> String {
     let checksum_bits = derive_checksum_bits(entropy);
     let bits = format!("{}{}", entropy_bits, checksum_bits);
 
-    let chunks = bits.as_bytes().chunks(11);
+    lazy_static! {
+        static ref RE: Regex = Regex::new("(.{1,11})").unwrap();
+    }
 
-    //let intval = isize::from_str_radix(bin_idx, 2).unwrap();
+    // TODO: Static This
+    let wordlist_en: Vec<String> = include_str!("wordlists/english.txt")
+        .split_whitespace()
+        .map(|w| w.to_string())
+        .collect();
 
-    println!("{:?}", entropy_bits);
+    // This can be more effeciently handled with a single iter,
+    // but want to stay consistent with mobile app.
+    let chunks: Vec<String> = RE
+        .find_iter(&bits)
+        .map(|m| m.as_str().to_string())
+        .collect();
 
-    "".to_string()
+    let words: Vec<String> = chunks
+        .iter()
+        .map(|binary| wordlist_en[binary_to_bytes(binary)].clone())
+        .collect();
+
+    words.join(" ")
 }
 
 /// Converts a vec of bytes into a single binary number string.
@@ -61,8 +77,8 @@ fn bytes_to_binary(bytes: &Vec<u8>) -> String {
 }
 
 /// Converts a binary string into an integer
-fn binary_to_bytes(bin: &str) -> u32 {
-    let res: u32 = u32::from_str_radix(bin, 2).unwrap();
+fn binary_to_bytes(bin: &str) -> usize {
+    let res: usize = usize::from_str_radix(bin, 2).unwrap();
     res
 }
 
@@ -85,8 +101,10 @@ mod should {
     use super::*;
 
     #[test]
-    fn generate_mnemonic_without_panic() {
-        assert_eq!(generate_mnemonic(), "".to_string());
+    fn generate_mnemonic_twelve_words() {
+        let words = generate_mnemonic();
+        let list: Vec<&str> = words.split(" ").collect();
+        assert_eq!(list.len(), 12);
     }
 
     #[test]

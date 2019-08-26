@@ -1,6 +1,9 @@
 #[macro_use]
 extern crate serde_derive;
 
+#[macro_use]
+extern crate lazy_static;
+
 use reqwest::header::{ContentType, Headers};
 use std::collections::HashMap;
 use std::time::Duration;
