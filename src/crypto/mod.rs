@@ -33,6 +33,7 @@ pub fn generate_keypair(mnemonic: &str) -> (PublicKey, SecretKey) {
     unimplemented!()
 }
 
+/// Turns an entropy into a word list ala bip39
 fn entropy_to_mnemonic(entropy: &Vec<u8>) -> String {
     assert!(!(entropy.len() < 16), "invalid entropy, less than 16");
     assert!(!(entropy.len() > 32), "invalid entropy, greater than 32");
@@ -47,10 +48,7 @@ fn entropy_to_mnemonic(entropy: &Vec<u8>) -> String {
     }
 
     // TODO: Static This
-    let wordlist_en: Vec<String> = include_str!("wordlists/english.txt")
-        .split_whitespace()
-        .map(|w| w.to_string())
-        .collect();
+    let wordlist_en = get_wordlist_en();
 
     // This can be more effeciently handled with a single iter,
     // but want to stay consistent with mobile app.
@@ -65,6 +63,19 @@ fn entropy_to_mnemonic(entropy: &Vec<u8>) -> String {
         .collect();
 
     words.join(" ")
+}
+
+fn mnemonic_to_entropy(mnemonic: String) -> Vec<u8> {
+    let words: Vec<&str> = mnemonic.split(" ").collect();
+
+    // TODO: Static This
+    let wordlist_en = get_wordlist_en();
+
+    let bits = words.iter().map(|w| {
+        let idx = wordlist_en.iter().position(|&s| s == w);
+    });
+
+    unimplemented!()
 }
 
 /// Converts a vec of bytes into a single binary number string.
@@ -93,6 +104,14 @@ fn derive_checksum_bits(entropy: &Vec<u8>) -> String {
     let hash = hasher.result();
 
     bytes_to_binary(&hash.as_slice().to_vec())[0..cs].to_string()
+}
+
+fn get_wordlist_en() -> Vec<String> {
+    // TODO: Static This
+    include_str!("wordlists/english.txt")
+        .split_whitespace()
+        .map(|w| w.to_string())
+        .collect()
 }
 
 #[cfg(test)]
