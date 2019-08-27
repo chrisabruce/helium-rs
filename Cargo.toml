@@ -21,6 +21,7 @@ hex = "0.3.2"
 sha2 = "0.8.0"
 regex = "1"
 lazy_static = "1"
+base64 = "0.10.1"
 
 [dependencies.bs58]
 version = "0.2.4"
