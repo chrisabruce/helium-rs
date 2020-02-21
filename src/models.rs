@@ -13,7 +13,7 @@ pub struct Block {
 }
 
 pub struct BlockSignature {
-    pub block_height: i64,
+    pub block: i64,
     pub signer: String,
     pub signature: String,
 }
@@ -41,7 +41,7 @@ pub enum TransactionType {
 }
 
 pub struct Transaction {
-    pub block_height: i64,
+    pub block: i64,
     pub hash: String,
     pub type: TransactionType,
     pub fields: String,
@@ -67,7 +67,7 @@ pub struct TransactionActor {
 }
 
 pub struct Account {
-    pub block_height: i64,
+    pub block: i64,
     pub timestamp: chrono::DateTime<Utc>,
     pub address: String,
     pub dc_balance: i64,
@@ -79,23 +79,41 @@ pub struct Account {
 }
 
 pub struct Gateway {
-    pub block_height: i64,
+    pub block: i64,
     pub address: String,
     pub owner: String,
     pub location: Option<String>,
-    
+    pub alpha: f64,
+    pub beta: f64,
+    pub delta: i32,
+    pub score: f64,
+    pub last_poc_challenge: Option<i64>,
+    pub last_poc_onion_challenge: Option<String>,
+    pub witnesses: String,
 }
 
 pub enum PendingTransactionStatus {
-
+    Received,
+    Pending,
+    Failed,
 }
 
 pub enum PendingTransactionNonceType {
-
+    Balance,
+    Security,
+    Dc,
 }
 
 pub struct PendingTransaction {
-
+    pub created_at: chrono::DateTime<Utc>,
+    pub updated_at: chrono::Datetime<Utc>,
+    pub hash: String,
+    pub type: TransactionType,
+    pub address: String,
+    pub nonce: i64,
+    pub nonce_type: PendingTransactionNonceType,
+    pub failed_reason: Option<String>,
+    pub data: Vec<u8>,
 }
 
 
