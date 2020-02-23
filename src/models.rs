@@ -1,10 +1,10 @@
-use chrono;
+use chrono::{DateTime, Utc};
 
 pub struct Block {
     pub height: i64,
     pub time: i64,
-    pub timestamp: chrono::DateTime<Utc>,
-    pub prev_hash: Option<String>
+    pub timestamp: DateTime<Utc>,
+    pub prev_hash: Option<String>,
     pub block_hash: String,
     pub transaction_count: i32,
     pub hbbft_round: i64,
@@ -43,7 +43,7 @@ pub enum TransactionType {
 pub struct Transaction {
     pub block: i64,
     pub hash: String,
-    pub type: TransactionType,
+    pub r#type: TransactionType,
     pub fields: String,
 }
 
@@ -68,7 +68,7 @@ pub struct TransactionActor {
 
 pub struct Account {
     pub block: i64,
-    pub timestamp: chrono::DateTime<Utc>,
+    pub timestamp: DateTime<Utc>,
     pub address: String,
     pub dc_balance: i64,
     pub dc_nonce: i64,
@@ -105,10 +105,10 @@ pub enum PendingTransactionNonceType {
 }
 
 pub struct PendingTransaction {
-    pub created_at: chrono::DateTime<Utc>,
-    pub updated_at: chrono::Datetime<Utc>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
     pub hash: String,
-    pub type: TransactionType,
+    pub r#type: TransactionType,
     pub address: String,
     pub nonce: i64,
     pub nonce_type: PendingTransactionNonceType,
