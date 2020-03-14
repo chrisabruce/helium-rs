@@ -1,6 +1,6 @@
 # helium-rs
 
-A Rust wrapper around the [Helium.com](https://github.com/helium/blockchain-api) blockchain api.
+A Rust workspace for Helium related libraries and tools.
 
 ## Status
 
