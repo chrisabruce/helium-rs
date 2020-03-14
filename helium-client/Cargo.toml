@@ -12,5 +12,5 @@ edition = "2018"
 publish = false
 
 [dependencies]
-chrono = "0.4.10"
+helium = { path = "../helium"}
 

@@ -116,5 +116,10 @@ pub struct PendingTransaction {
     pub data: Vec<u8>,
 }
 
-
-
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        assert_eq!(2 + 2, 4);
+    }
+}

@@ -1,6 +1,6 @@
 use std::error::Error;
 
-pub mod models;
+use helium;
 
 pub struct Blockchain {
     db_url: String,
